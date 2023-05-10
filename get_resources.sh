@@ -64,7 +64,7 @@ fi
 
 # Construct the URL, create an output file and make the initial API call
 URL="${BASE_URL}/rest/orgs/${ORG_ID}/${URL_PATH}?version=${API_VERSION}&limit=${LIMIT}"
-resources_timestamp=$(date +%s)
+timestamp=$(date +%s)
 touch resources_$timestamp.json
 
 response=$(curl -X GET "${URL}" \
