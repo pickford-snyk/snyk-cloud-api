@@ -18,5 +18,9 @@
    echo "JQ not found. JQ must be installed to use this."
    exit 1
  fi
- 
- echo "$FILE_PATH" | jq -r '.data[] | .attributes | .resource_type' | sort | uniq -c
+
+ if [ "$1" == "--file" ] || [ "$1" == "-f" ]; then
+   FILE_PATH=$2
+ fi
+
+ cat "$FILE_PATH" | jq -r '.data[] | .attributes | .resource_type' | sort | uniq -c

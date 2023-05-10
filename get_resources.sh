@@ -45,7 +45,7 @@ fi
 
 # Get the org ID
 if [ "$1" == "--org" ] || [ "$1" == "-o" ]; then
-  ORG=$2
+  ORG_ID=$2
 fi
 
 # Collect the token if it's not set
@@ -67,13 +67,14 @@ URL="${BASE_URL}/rest/orgs/${ORG_ID}/${URL_PATH}?version=${API_VERSION}&limit=${
 timestamp=$(date +%s)
 touch resources_$timestamp.json
 
+echo $URL
 response=$(curl -X GET "${URL}" \
     -H "Accept: application/vnd.api+json" \
     -H "Authorization: Token ${TOKEN}")
 echo $response >> resources_$timestamp.json
 
 # Check if there are more pages
-NEXT=$(cat $response | jq ' .links.next' | tr -d '"')
+NEXT=$(echo $response | jq ' .links.next' | tr -d '"')
 
 # Continue to call the API until there aren't more pages
 while [[ $NEXT != "" ]]
@@ -82,8 +83,8 @@ do
     response=$(curl -X GET "${BASE_URL}${NEXT}" \
     -H "Accept: application/vnd.api+json" \
     -H "Authorization: Token ${TOKEN}")
-    echo $response >> resources_$timestamp.json.json
+    echo $response >> resources_$timestamp.json
     NEXT=$(echo $response | jq ' .links.next' | tr -d '"')
-    INCREMENT=INCREMENT+1
+    ((INCREMENT++))
     sleep 1
 done
